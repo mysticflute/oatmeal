@@ -23,16 +23,23 @@ module.exports = (grunt) ->
     # ------------------
     clean:
       dist: ['dist']
+      specs: ['spec/build']
 
     #--------------------
     # grunt `coffee` task
     # -------------------
     coffee:
-      compile:
+      sources:
         expand: true
         cwd: 'src'
         src: ['*.coffee']
         dest: 'dist'
+        ext: '.js'
+      specs:
+        expand: true
+        cwd: 'spec'
+        src: '*.coffee'
+        dest: 'spec/build'
         ext: '.js'
 
     #-------------------
@@ -40,8 +47,8 @@ module.exports = (grunt) ->
     # ------------------
     watch:
       build:
-        files: 'src/**/*.coffee'
-        tasks: 'build'
+        files: ['src/**/*.coffee', 'spec/**/*.coffee']
+        tasks: 'qtest'
 
     #--------------------
     # grunt `uglify` task
@@ -53,17 +60,30 @@ module.exports = (grunt) ->
         files:
           'dist/oatmeal.min.js': ['dist/oatmeal.js']
 
+    #---------------------
+    # grunt `jasmine` task
+    # --------------------
+    jasmine:
+      all:
+        src: 'dist/oatmeal.js'
+        options:
+          specs: 'spec/build/**/*.js'
 
   # load plugins
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
+  grunt.loadNpmTasks 'grunt-contrib-jasmine'
   grunt.loadNpmTasks 'grunt-notify'
 
   # aliases
   grunt.registerTask 'build', 'Compile the scripts', ['clean', 'coffee', 'uglify']
-  grunt.registerTask 'test', 'Run the tests', ['build', 'nodeunit']
+  grunt.registerTask 'test', 'Build and run the tests', ['build', 'jasmine']
+  grunt.registerTask 'qtest', 'A quicker version of test', ['coffee', 'jasmine']
+  grunt.registerTask 'dev', 'For development, watch for changes and rebuild + test automatically', ['watch']
 
   # default task
-  grunt.registerTask 'default', 'Does a full clean and build', ['test']
+  grunt.registerTask 'default', 'Build and run the tests', ['test']
+
+
