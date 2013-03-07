@@ -23,34 +23,45 @@ describe 'oatmeal', ->
       expect(oatmeal.cookie('obj').second).toEqual 'b'
       expect(oatmeal.cookie('obj').third.inner).toEqual 'aha!'
 
-  # trim
+  describe 'when there are many cookies in the cookie jar', ->
+    it 'should not contain extra space', ->
+      oatmeal.cookie 's1', ' test'
+      oatmeal.cookie 's2', 2
+      oatmeal.munch()
+      console.log document.cookie
+      console.log 'S' + oatmeal.cookie ' s1'
 
-  # secure
 
-  # no secure
+  describe 'when baking a cookie', ->
 
-  # path
+    # secure
 
-  # no path
+    # no secure
 
-  # expires date
+    # path
 
-  # expire seconds
+    # no path
 
-  # expires days
+    # expires date
 
-  # expires months
+    # expire seconds
 
-  # expires years
+    # expires days
 
-  # expires expires + days
+    # expires months
 
-  # no expires
+    # expires years
 
-  # empty cookie jar
+    # expires expires + days
 
-  describe 'a refresh', ->
-    it 'is required once a cookie has been read', ->
+    # no expires
+
+  describe 'when a cookie is eaten', ->
+
+    # empty cookie jar
+
+  describe 'restocking the cookie jar', ->
+    it 'is required once any cookie has been read', ->
       # first a set
       oatmeal.cookie 'test', 1
 
