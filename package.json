@@ -1,0 +1,41 @@
+{
+  "name": "oatmeal",
+  "description": "A lightweight, opinionated cookie manager",
+  "version": "0.1.0beta",
+  "homepage": "https://github.com/endium/oatmeal",
+  "author": {
+    "name": "Nathan McWilliams",
+    "email": "mcwilliams.personal@gmail.com",
+    "url": "http://nathan.seedoftruth.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/endium/oatmeal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/endium/oatmeal/issues"
+  },
+  "licenses": [{ "type": "MIT", "url": "https://github.com/endium/oatmeal/blob/master/LICENSE-MIT" }],
+  "main": "dist/index.js",
+  "ender": "dist/ender.js",
+  "directories": {
+    "dist": "dist"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "dependencies": {
+    "ender": "*",
+    "file": "*"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.0"
+  },
+  "keywords": [
+    "oatmeal",
+    "cookie"
+  ]
+}
