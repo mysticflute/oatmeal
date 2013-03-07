@@ -15,8 +15,13 @@
   "bugs": {
     "url": "https://github.com/endium/oatmeal/issues"
   },
-  "licenses": [{ "type": "MIT", "url": "https://github.com/endium/oatmeal/blob/master/LICENSE-MIT" }],
-  "main": "dist/index.js",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/endium/oatmeal/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "dist/oatmeal.js",
   "ender": "dist/ender.js",
   "directories": {
     "dist": "dist"
@@ -32,7 +37,12 @@
     "file": "*"
   },
   "devDependencies": {
-    "grunt": "~0.4.0"
+    "grunt": "~0.4.0",
+    "grunt-contrib-coffee": "~0.6.0",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-uglify": "~0.1.2",
+    "grunt-contrib-watch": "~0.3.1",
+    "grunt-notify": "~0.1.4"
   },
   "keywords": [
     "oatmeal",
