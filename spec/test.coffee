@@ -1,8 +1,9 @@
 describe 'oatmeal', ->
   oatmeal = window.oatmeal
 
+  afterEach -> oatmeal.munchMunch()
+
   describe 'when eating a cookie', ->
-    beforeEach -> oatmeal.refresh()
 
     it 'should taste like a string', ->
       oatmeal.cookie 'string', 'value1'
@@ -74,8 +75,8 @@ describe 'oatmeal', ->
       # shouldn't find the cookie because we've already read them
       expect(oatmeal.cookie 'test2').not.toBeDefined()
 
-      # but if we refresh...
-      oatmeal.refresh()
+      # but if we restock...
+      oatmeal.refillJar()
 
       # it should find it
       expect(oatmeal.cookie 'test2').toBeDefined()

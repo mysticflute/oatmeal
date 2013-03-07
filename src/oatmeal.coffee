@@ -7,28 +7,23 @@
 'use strict'
 
 cookieJar = null
+source = null
 
 ###
-Takes a raw cookie string and returns a map of key-value pairs
-
-@param {String} string The string to parse, e.g., from document.cookie
-
-@returns an object with key/value pairs from the parsed input
+Gets the specified source containing the cookie string, or document.cookie if not set.
+@returns a string containing the cookies to parse or null if not available.
 ###
-bakeCookies = (string) ->
-  pairs = {}
+getSource = -> source or document.cookie or null
 
-  for cookie in string.split /;\s/g
-    pair = cookie.split '='
-    console.log 'S'+string
-    pairs[pair[0]] = decode pair[1]
-
-  pairs
+###
+Specifies the specific string to parse for cookies.
+@param {String} src The properly formatted string containing the cookies.
+###
+setSource = (src) -> source = src
 
 ###
 Encodes a cookie value and converts it to a JSON string.
-
-@param {Object|Number|Boolean|String} value The value to encode
+@param {Object|Number|Boolean|String} value The value to encode.
 ###
 encode = (value) -> encodeURIComponent JSON.stringify(value)
 
@@ -42,16 +37,50 @@ will be returned.
 decode = (value) -> JSON.parse decodeURIComponent(value)
 
 ###
-Gets a cookie value by name/
+Gets a cookie value by name.
 
-@param {String} name The name of the cookie to retrieve
+@param {String} name The name of the cookie to retrieve.
 ###
-get = (name) ->
-  cookieJar = bakeCookies document.cookie
-  cookieJar[name]
+get = (name) -> (cookieJar ?= bakeCookies getSource())[name]
 
 ###
-Sets a cookie value.
+Saves a cookie to document.cookie.
+
+The value will always be encoded and JSON-stringified.
+
+@param {String} name The name of the cookie to save.
+@param {String|Boolean|Number|Object} value The value of the cookie. This can be a full blown object
+                                            to be JSONified, or a simple scalar value as well.
+@param {Object} [options] Optional configuration options. See the #cookie method for detailed list.
+###
+set = (name, value, options) -> document.cookie = bake(name, value, options)
+
+###
+Takes a raw cookie string and returns a map of key-value pairs.
+
+@param {String} string The string to parse, e.g., from getSource().
+@returns an object with key/value pairs from the parsed input.
+###
+bakeCookies = (string) ->
+  pairs = {}
+
+  for cookie in string.split /;\s/g
+    pair = cookie.split '='
+    pairs[pair[0]] = decode pair[1]
+
+  pairs
+
+###
+Refresh the cookies cache. This is useful in cases where you need to set a cookie and read
+the value back later within the same page load. Otherwise, it will only find cookies from
+the point in time which the cookie string was originally read.
+###
+refillJar = -> cookieJar = bakeCookies(getSource()) unless getSource() is null
+
+###
+Constructs a properly formatted cookie string using the given information.
+Use this method instead of #cookie(name, value, options) if you want the raw
+cookie string instead of setting document.cookie (for example, to use on the nodejs server).
 
 The value will always be encoded and JSON-stringified.
 
@@ -60,8 +89,7 @@ The value will always be encoded and JSON-stringified.
                                             to be JSONified, or a simple scalar value as well.
 @param {Object} [options] Optional configuration options. See the #cookie method for detailed list.
 ###
-set = (name, value, options = {}) ->
-
+bake = (name, value, options = {}) ->
   # to summarize expires calculation...
   # 1. if 'expires' or any of the time lengths are not specified then expires will not be output
   # 2. if 'expires' is specified, any time lengths will be added on to that date's time
@@ -77,7 +105,6 @@ set = (name, value, options = {}) ->
   length += 1000 * 60 * 60 * 24 * options.days if options.days?
   length += 1000 * 60 * 60 * 24 * 30 * options.months if options.months?
   length += 1000 * 60 * 60 * 24 * 365 * options.years if options.years?
-  console.log "length:#{length}"
   date.setTime(date.getTime() + length)
 
 
@@ -86,8 +113,8 @@ set = (name, value, options = {}) ->
   secure = serialize 'secure', options.secure
   expires = serialize 'expires', if options.expires? or length isnt 0 then date.toUTCString() else null
 
-  console.log "\ncookie set to: #{name}=#{encode value}#{expires}#{path}#{domain}#{secure}"
-  document.cookie = "#{name}=#{encode value}#{expires}#{path}#{domain}#{secure}"
+  console.log "\nbaking: #{name}=#{encode value}#{expires}#{path}#{domain}#{secure}"
+  "#{name}=#{encode value}#{expires}#{path}#{domain}#{secure}"
 
 ###
 Helper method to construct the cookie string.
@@ -103,24 +130,19 @@ serialize = (name, value) ->
   if value is yes then "; #{name}" else "; #{name}=#{value}"
 
 ###
-Refresh the cookies cache, so that subsequent calls to #cookie or #get will reparse
-the cookie string first. This is useful in cases where you need to set a cookie and read
-the value back later within the same page load. Otherwise, it will only find cookies from
-the point in time which the cookie string was originally read.
-###
-refresh = -> cookieJar = bakeCookies document.cookie
-
-###
 Deletes a cookie.
 
 @param {String} name Name of the cookie to remove.
 ###
-munch = (name) ->
-  if name?
-    set(name, '(del)', { days: -1 })
-  else
-    munch cookie for own cookie of cookies
-    refresh()
+munch = (name) -> set(name, '(del)', { days: -1 })
+
+###
+Deletes all cookies
+###
+munchMunch = ->
+  refillJar()
+  munch cookie for own cookie of cookieJar
+  cookieJar = null
 
 ###
 Main entry point for reading and writing cookies.
@@ -154,9 +176,18 @@ cookie = (name, value, options) -> if value? then set(name, value, options) else
 
 # public API
 oatmeal =
+  # get cookie string for serialization
+  bake: bake
+  # delete specified cookie
   munch: munch
+  # get or set cookie
   cookie: cookie
-  refresh: refresh
+  # reread cookies from source
+  refillJar: refillJar
+  # specify the cookie source (default document.cookie)
+  source: setSource
+  # delete all cookies
+  munchMunch: munchMunch
 
 # export to the world
 if module? and module.exports? then module.exports = oatmeal else window.oatmeal = oatmeal

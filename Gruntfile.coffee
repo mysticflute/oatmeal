@@ -81,7 +81,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'build', 'Compile the scripts', ['clean', 'coffee', 'uglify']
   grunt.registerTask 'test', 'Build and run the tests', ['build', 'jasmine']
   grunt.registerTask 'qtest', 'A quicker version of test', ['coffee', 'jasmine']
-  grunt.registerTask 'dev', 'For development, watch for changes and rebuild + test automatically', ['watch']
+  grunt.registerTask 'dev', 'For development, watch for changes and rebuild + test automatically', ['test', 'watch']
 
   # default task
   grunt.registerTask 'default', 'Build and run the tests', ['test']
