@@ -28,38 +28,74 @@ describe 'oatmeal', ->
     it 'should not contain extra space', ->
       oatmeal.cookie 's1', ' test'
       oatmeal.cookie 's2', 2
-      oatmeal.munch()
-      console.log document.cookie
-      console.log 'S' + oatmeal.cookie ' s1'
+      # 's2' should be found, ignore space before it in 's1=test; s2=2'
+      expect(oatmeal.cookie 's2').toEqual 2
 
 
   describe 'when baking a cookie', ->
 
-    # secure
+    it 'can be secure', ->
+      result = oatmeal.bake 'test', 1, {  secure: true }
+      expect(result).toMatch 'secure'
 
-    # no secure
+    it 'can not be secure', ->
+      result = oatmeal.bake 'test', 1, {  secure: false }
+      expect(result).not.toMatch 'secure'
 
-    # path
+    it 'uses the default path', ->
+      result = oatmeal.bake 'test', 1
+      expect(result).toMatch 'path=/'
 
-    # no path
+    it 'uses a specified path', ->
+      result = oatmeal.bake 'test', 1, { path: 'abc' }
+      expect(result).toMatch 'path=abc'
 
-    # expires date
+    it 'uses the expiration date', ->
+      date = new Date()
+      result = oatmeal.bake 'test', 1, { expires: date }
+      expect(result).toMatch "expires=#{date.toUTCString()}"
 
-    # expire seconds
+    it 'can expire in seconds', ->
+      date = new Date();
+      result = oatmeal.bake 'test', 1, { seconds: 30 }
+      expect(result).toMatch "expires"
 
-    # expires days
+    it 'can expire in days', ->
+      date = new Date();
+      result = oatmeal.bake 'test', 1, { days: 30 }
+      expect(result).toMatch "expires"
 
-    # expires months
+    it 'can expire in months', ->
+      date = new Date();
+      result = oatmeal.bake 'test', 1, { months: 30 }
+      expect(result).toMatch "expires"
 
-    # expires years
+    it 'can expire in seconds', ->
+      date = new Date();
+      result = oatmeal.bake 'test', 1, { years: 30 }
+      expect(result).toMatch "expires"
 
-    # expires expires + days
+    # expires + days
+    it 'can expire in at a date plus time', ->
+      date = new Date();
+      result = oatmeal.bake 'test', 1, { expires: date, seconds: 10 }
+      date.setTime date.getTime() + (10 * 1000)
+      expect(result).toMatch "expires=#{date.toUTCString()}"
+
+    # days + seconds
 
     # no expires
+    it 'can never expire', ->
+      result = oatmeal.bake 'test', 1
+      expect(result).not.toMatch 'expires'
+
+  # use source
 
   describe 'when a cookie is eaten', ->
-
-    # empty cookie jar
+    it 'is gone from existence', ->
+      oatmeal.cookie 'test', 1
+      oatmeal.munch('test')
+      expect(document.cookie).toEqual ''
 
   describe 'restocking the cookie jar', ->
     it 'is required once any cookie has been read', ->

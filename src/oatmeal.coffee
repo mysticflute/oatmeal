@@ -41,7 +41,7 @@ Gets a cookie value by name.
 
 @param {String} name The name of the cookie to retrieve.
 ###
-get = (name) -> (cookieJar ?= bakeCookies getSource())[name]
+get = (name) -> (cookieJar ?= fillJar getSource())[name]
 
 ###
 Saves a cookie to document.cookie.
@@ -61,10 +61,10 @@ Takes a raw cookie string and returns a map of key-value pairs.
 @param {String} string The string to parse, e.g., from getSource().
 @returns an object with key/value pairs from the parsed input.
 ###
-bakeCookies = (string) ->
+fillJar = (string) ->
   pairs = {}
 
-  for cookie in string.split /;\s/g
+  for cookie in string.split /;\s+/g
     pair = cookie.split '='
     pairs[pair[0]] = decode pair[1]
 
@@ -75,7 +75,7 @@ Refresh the cookies cache. This is useful in cases where you need to set a cooki
 the value back later within the same page load. Otherwise, it will only find cookies from
 the point in time which the cookie string was originally read.
 ###
-refillJar = -> cookieJar = bakeCookies(getSource()) unless getSource() is null
+refillJar = -> cookieJar = fillJar(getSource()) unless getSource() is null
 
 ###
 Constructs a properly formatted cookie string using the given information.
@@ -126,7 +126,7 @@ Helper method to construct the cookie string.
 just a string containing the name. Otherwise a string in the format of 'name=value'.
 ###
 serialize = (name, value) ->
-  if not value? then return ''
+  if not value? or value is no then return ''
   if value is yes then "; #{name}" else "; #{name}=#{value}"
 
 ###
