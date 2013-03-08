@@ -88,6 +88,8 @@ The value will always be encoded and JSON-stringified.
 @param {String|Boolean|Number|Object} value The value of the cookie. This can be a full blown object
                                             to be JSONified, or a simple scalar value as well.
 @param {Object} [options] Optional configuration options. See the #cookie method for detailed list.
+
+@returns The properly formatted cookie string, e.g, 'name=value; path=/'
 ###
 bake = (name, value, options = {}) ->
   # to summarize expires calculation...
@@ -113,7 +115,6 @@ bake = (name, value, options = {}) ->
   secure = serialize 'secure', options.secure
   expires = serialize 'expires', if options.expires? or length isnt 0 then date.toUTCString() else null
 
-  console.log "\nbaking: #{name}=#{encode value}#{expires}#{path}#{domain}#{secure}"
   "#{name}=#{encode value}#{expires}#{path}#{domain}#{secure}"
 
 ###
@@ -174,7 +175,7 @@ to either options.expires (if specified) or the current time.
 ###
 cookie = (name, value, options) -> if value? then set(name, value, options) else get(name)
 
-# public API
+# client/browser API
 oatmeal =
   # get cookie string for serialization
   bake: bake
@@ -189,5 +190,16 @@ oatmeal =
   # delete all cookies
   munchMunch: munchMunch
 
+# node API
+oatmealNode =
+  # get cookie string for serialization
+  bake: bake
+  # specify the cookie string to parse
+  source: source
+
 # export to the world
-if module? and module.exports? then module.exports = oatmeal else window.oatmeal = oatmeal
+if process?.pid
+  module.exports = oatmealNode
+else
+  if module? and module.exports? then module.exports = oatmeal else window.oatmeal = oatmeal
+

@@ -8,7 +8,7 @@
 
 (function() {
   'use strict';
-  var bake, cookie, cookieJar, decode, encode, fillJar, get, getSource, munch, munchMunch, oatmeal, refillJar, serialize, set, setSource, source,
+  var bake, cookie, cookieJar, decode, encode, fillJar, get, getSource, munch, munchMunch, oatmeal, oatmealNode, refillJar, serialize, set, setSource, source,
     __hasProp = {}.hasOwnProperty;
 
   cookieJar = null;
@@ -129,6 +129,8 @@
   @param {String|Boolean|Number|Object} value The value of the cookie. This can be a full blown object
                                               to be JSONified, or a simple scalar value as well.
   @param {Object} [options] Optional configuration options. See the #cookie method for detailed list.
+  
+  @returns The properly formatted cookie string, e.g, 'name=value; path=/'
   */
 
 
@@ -162,7 +164,6 @@
     domain = serialize('domain', options.domain);
     secure = serialize('secure', options.secure);
     expires = serialize('expires', (options.expires != null) || length !== 0 ? date.toUTCString() : null);
-    console.log("\nbaking: " + name + "=" + (encode(value)) + expires + path + domain + secure);
     return "" + name + "=" + (encode(value)) + expires + path + domain + secure;
   };
 
@@ -263,10 +264,19 @@
     munchMunch: munchMunch
   };
 
-  if ((typeof module !== "undefined" && module !== null) && (module.exports != null)) {
-    module.exports = oatmeal;
+  oatmealNode = {
+    bake: bake,
+    source: source
+  };
+
+  if (typeof process !== "undefined" && process !== null ? process.pid : void 0) {
+    module.exports = oatmealNode;
   } else {
-    window.oatmeal = oatmeal;
+    if ((typeof module !== "undefined" && module !== null) && (module.exports != null)) {
+      module.exports = oatmeal;
+    } else {
+      window.oatmeal = oatmeal;
+    }
   }
 
 }).call(this);
