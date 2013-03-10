@@ -110,7 +110,7 @@ Specifies the string to parse for cookies. You can grab this from the request he
 Ender
 -----
 
-This library works with [Ender](ender.jit.su)!
+This library works with [Ender](http://ender.jit.su)!
 
     ender build oatmeal
 
@@ -125,7 +125,9 @@ When used with ender, the method names are changed up a bit because we're on a g
 
 Othewise, everything else should remain the same. You can also `require` the oatmeal library.
 
-    var oatmeal = require('oatmeal')
+```js
+var oatmeal = require('oatmeal')
+```
 
 Support
 -------
