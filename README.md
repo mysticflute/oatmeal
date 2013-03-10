@@ -17,7 +17,7 @@ oatmeal.cookie("raisin",      "yumyum", { seconds: 50 })
 oatmeal.cookie("chewy",       "yumyum", { minutes: 10 })
 oatmeal.cookie("thick",       "yumyum", { hours: 12 })
 oatmeal.cookie("soft",        "yumyum", { days: 15 })
-oatmeal.cookie("specialties", "yum!",   { months: 3 })
+oatmeal.cookie("Specialty's", "yum!",   { months: 3 })
 oatmeal.cookie("thin",        "meh",    { years: 1 })
 oatmeal.cookie("crunchy",     "meh!",   { expires: new Date() })
 ```
@@ -30,7 +30,7 @@ oatmeal.cookie("raisin", "yummy", { months: 3, days: 10, seconds: 10 })
 oatmeal.cookie("raisin", "yummy", { expires: myDate, days: 10 })
 ```
 
-_Disclaimer: `months` and `years` are approximations._
+_Disclaimer: `months` and `years` are approximations (30 & 365)._
 
 works with your objects, not against
 
@@ -65,7 +65,7 @@ A couple of notes. Without `expires`, all of the timing is relative to the curre
 
 Timing options can be combined together, e.g., you can specify `months: 1, days: 3` to get an expiration date of one month and three days from now.
 
-### Cookies in yur browser
+### ~ Cookies in yur browser ~
 
 #### oatmeal.cookie(name, value [, options])
 
@@ -89,15 +89,15 @@ Deletes all cookies.
 
 #### oatmeal.refillJar
 
-Forces a refresh of the known cookies. The list of cookies is cached upon first access. You will need to call this method if you access a cookie, set a new cookie, and then need to access that new cookie's value later on within the same page load. Oatmeal won't know about that new cookie until you call this method.
+Forces a refresh of the known cookies. The list of cookies is cached upon first access. You will need to call this method if you first access a cookie, then set a new cookie, and then need to access that new cookie's value later on within the same page load. Oatmeal won't know about that new cookie until you call this method.
 
 #### oatmeal.source(string)
 
-Specifies a string for oatmeal to parse for cookies. This is mainly useful on the node side.
+Specifies a string to parse for cookies. This is mainly useful on the node side.
 
-### Cookies in yur nodez
+### ~ Cookies in yur nodez ~
 
-You can use oatmeal on nodejs as well, albeit in a limited fashion.
+You can use oatmeal in nodejs as well, albeit in a limited fashion.
 
 #### oatmeal.bake(name, value [, options])
 
@@ -106,6 +106,26 @@ Generates a properly formatted cookie string for the given parameters. It's up t
 #### oatmeal.source(string)
 
 Specifies the string to parse for cookies. You can grab this from the request headers.
+
+Ender
+-----
+
+This library works with [Ender](ender.jit.su)!
+
+    ender build oatmeal
+
+When used with ender, the method names are changed up a bit because we're on a global namespace object ($).
+
+- `$.cookie` = `oatmeal.cookie`
+- `$.deleteCookie` = `oatmeal.munch`
+- `$.deleteCookies` = `oatmeal.munchMunch`
+- `$.refreshCookies` = `oatmeal.refillJar`
+- `$.serializeCookie` = `oatmeal.bake`
+- `$.setCookieSource` = `oatmeal.source`
+
+Othewise, everything else should remain the same. You can also `require` the oatmeal library.
+
+    var oatmeal = require('oatmeal')
 
 Support
 -------
