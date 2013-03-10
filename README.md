@@ -8,7 +8,7 @@ Why another cookie manager?
 
 light as a feather
 
-**1.6kb minified, 438 bytes gzipped**
+**1.66kb minified, 450 bytes gzipped**
 
 flexible expires
 
@@ -89,7 +89,7 @@ Deletes all cookies.
 
 #### oatmeal.refillJar
 
-Forces a refresh of the known cookies. The list of cookies is cached upon first access. You will need to call this method if you first access a cookie, then set a new cookie, and then need to access that new cookie's value later on within the same page load. Oatmeal won't know about that new cookie until you call this method.
+Forces a refresh of the known cookies. Normally you won't need to call this externally. An instance where you might need to is if you respecify the source. The previously parsed cookies would be cached and unless you add a new one it won't get updated. You can force that update by calling this method.
 
 #### oatmeal.source(string)
 

@@ -98,6 +98,13 @@ describe 'oatmeal', ->
       result = oatmeal.bake 'test', 1
       expect(result).not.toMatch 'expires'
 
+  describe 'when replacing a cookie', ->
+    oatmeal.cookie 'test', 1
+    expect(oatmeal.cookie 'test').toEqual 1
+
+    oatmeal.cookie 'test', 2
+    expect(oatmeal.cookie 'test').toEqual 2
+
   describe 'when sourcing the cookie ingredients', ->
     afterEach -> oatmeal.source null
 
@@ -112,8 +119,12 @@ describe 'oatmeal', ->
       oatmeal.munch('test')
       expect(document.cookie).toEqual ''
 
+  describe 'when there are not any cookies', ->
+    it 'can handle it just fine', ->
+      expect(oatmeal.cookie 'test').toBeNull
+
   describe 'restocking the cookie jar', ->
-    it 'is required once any cookie has been read', ->
+    it 'is automatic once any cookie has been added', ->
       # first a set
       oatmeal.cookie 'test', 1
 
@@ -123,11 +134,7 @@ describe 'oatmeal', ->
       # another set
       oatmeal.cookie 'test2', 2
 
-      # shouldn't find the cookie because we've already read them
-      expect(oatmeal.cookie 'test2').not.toBeDefined()
+      # should find the new one
+      expect(oatmeal.cookie 'test2').toEqual 2
 
-      # but if we restock...
-      oatmeal.refillJar()
 
-      # it should find it
-      expect(oatmeal.cookie 'test2').toBeDefined()

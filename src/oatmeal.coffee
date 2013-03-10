@@ -53,7 +53,7 @@ The value will always be encoded and JSON-stringified.
                                             to be JSONified, or a simple scalar value as well.
 @param {Object} [options] Optional configuration options. See the #cookie method for detailed list.
 ###
-set = (name, value, options) -> document.cookie = bake(name, value, options)
+set = (name, value, options) -> document.cookie = bake(name, value, options); refillJar()
 
 ###
 Takes a raw cookie string and returns a map of key-value pairs.
@@ -64,6 +64,8 @@ Takes a raw cookie string and returns a map of key-value pairs.
 fillJar = (string) ->
   pairs = {}
 
+  if not string then return pairs
+
   for cookie in string.split /;\s+/g
     pair = cookie.split '='
     pairs[pair[0]] = decode pair[1]
@@ -71,9 +73,8 @@ fillJar = (string) ->
   pairs
 
 ###
-Refresh the cookies cache. This is useful in cases where you need to set a cookie and read
-the value back later within the same page load. Otherwise, it will only find cookies from
-the point in time which the cookie string was originally read.
+Refreshes the cookies cache. Normally you won't need to call this externally.
+However, you might need to if you say, respecify the source.
 ###
 refillJar = -> cookieJar = fillJar(getSource()) unless getSource() is null
 

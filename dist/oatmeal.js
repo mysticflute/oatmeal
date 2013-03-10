@@ -82,7 +82,8 @@
 
 
   set = function(name, value, options) {
-    return document.cookie = bake(name, value, options);
+    document.cookie = bake(name, value, options);
+    return refillJar();
   };
 
   /*
@@ -96,6 +97,9 @@
   fillJar = function(string) {
     var cookie, pair, pairs, _i, _len, _ref;
     pairs = {};
+    if (!string) {
+      return pairs;
+    }
     _ref = string.split(/;\s+/g);
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       cookie = _ref[_i];
@@ -106,9 +110,8 @@
   };
 
   /*
-  Refresh the cookies cache. This is useful in cases where you need to set a cookie and read
-  the value back later within the same page load. Otherwise, it will only find cookies from
-  the point in time which the cookie string was originally read.
+  Refreshes the cookies cache. Normally you won't need to call this externally.
+  However, you might need to if you say, respecify the source.
   */
 
 
