@@ -46,7 +46,9 @@ get = (name) -> (cookieJar ?= fillJar getSource())[name]
 ###
 Saves a cookie to document.cookie.
 
-The value will always be encoded and JSON-stringified.
+This is for use in the browser only. The value will always be encoded and JSON-stringified.
+
+The cookies cache will automatically be updated after setting the cookie.
 
 @param {String} name The name of the cookie to save.
 @param {String|Boolean|Number|Object} value The value of the cookie. This can be a full blown object
@@ -81,11 +83,11 @@ refillJar = -> cookieJar = fillJar(getSource()) unless getSource() is null
 ###
 Constructs a properly formatted cookie string using the given information.
 Use this method instead of #cookie(name, value, options) if you want the raw
-cookie string instead of setting document.cookie (for example, to use on the nodejs server).
+cookie string back instead of automatically setting document.cookie.
 
 The value will always be encoded and JSON-stringified.
 
-@param {String} name The name of the cookie to save
+@param {String} name The name of the cookie to save.
 @param {String|Boolean|Number|Object} value The value of the cookie. This can be a full blown object
                                             to be JSONified, or a simple scalar value as well.
 @param {Object} [options] Optional configuration options. See the #cookie method for detailed list.
@@ -93,8 +95,8 @@ The value will always be encoded and JSON-stringified.
 @returns The properly formatted cookie string, e.g, 'name=value; path=/'
 ###
 bake = (name, value, options = {}) ->
-  # to summarize expires calculation...
-  # 1. if 'expires' or any of the time lengths are not specified then expires will not be output
+  # to summarize this expires calculation...
+  # 1. if 'expires' or any of the time lengths are not specified then 'expires' will not be output
   # 2. if 'expires' is specified, any time lengths will be added on to that date's time
   # 3. if 'expires' is not specified, any time lengths will be added to the current time
   # 4. any of the time length options can be provided; they are cumulative
@@ -109,7 +111,6 @@ bake = (name, value, options = {}) ->
   length += 1000 * 60 * 60 * 24 * 30 * options.months if options.months?
   length += 1000 * 60 * 60 * 24 * 365 * options.years if options.years?
   date.setTime(date.getTime() + length)
-
 
   path = serialize 'path', options.path or '/'
   domain = serialize 'domain', options.domain
@@ -134,7 +135,7 @@ serialize = (name, value) ->
 ###
 Deletes a cookie.
 
-@param {String} name Name of the cookie to remove.
+@param {String} name Name of the cookie to delete.
 ###
 munch = (name) -> set(name, '(del)', { days: -1 })
 
@@ -180,7 +181,7 @@ cookie = (name, value, options) -> if value? then set(name, value, options) else
 oatmeal =
   # get cookie string for serialization
   bake: bake
-  # delete specified cookie
+  # delete a specified cookie
   munch: munch
   # get or set cookie
   cookie: cookie

@@ -32,6 +32,7 @@ describe 'oatmeal', ->
       expect(oatmeal.cookie('obj').third.inner).toEqual 'aha!'
 
   describe 'when there are many cookies in the cookie jar', ->
+
     it 'should not contain extra space', ->
       oatmeal.cookie 's1', ' test'
       oatmeal.cookie 's2', 2
@@ -99,6 +100,7 @@ describe 'oatmeal', ->
       expect(result).not.toMatch 'expires'
 
   describe 'when replacing a cookie', ->
+
     oatmeal.cookie 'test', 1
     expect(oatmeal.cookie 'test').toEqual 1
 
@@ -106,6 +108,7 @@ describe 'oatmeal', ->
     expect(oatmeal.cookie 'test').toEqual 2
 
   describe 'when sourcing the cookie ingredients', ->
+
     afterEach -> oatmeal.source null
 
     it 'honors the source', ->
@@ -114,16 +117,19 @@ describe 'oatmeal', ->
       expect(oatmeal.cookie 'test2').toEqual 'test2'
 
   describe 'when a cookie is eaten', ->
+
     it 'is gone from existence', ->
       oatmeal.cookie 'test', 1
       oatmeal.munch('test')
       expect(document.cookie).toEqual ''
 
   describe 'when there are not any cookies', ->
+
     it 'can handle it just fine', ->
       expect(oatmeal.cookie 'test').toBeNull
 
   describe 'restocking the cookie jar', ->
+
     it 'is automatic once any cookie has been added', ->
       # first a set
       oatmeal.cookie 'test', 1

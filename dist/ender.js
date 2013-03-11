@@ -1,4 +1,11 @@
+
+/*
+integration with Ender (ender.jit.su)
+*/
+
+
 (function() {
+  'use strict';
   var oatmeal;
 
   oatmeal = require('oatmeal');

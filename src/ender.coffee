@@ -1,3 +1,9 @@
+###
+integration with Ender (ender.jit.su)
+###
+
+'use strict'
+
 oatmeal = require('oatmeal')
 
 $.ender

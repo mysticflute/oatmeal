@@ -22,8 +22,9 @@ module.exports = (grunt) ->
     # grunt `clean` task
     # ------------------
     clean:
-      dist: ['dist']
-      specs: ['spec/build']
+      dist: 'dist'
+      specs: 'spec/build'
+      grunt: '.grunt'
 
     # -------------------
     # grunt `coffee` task
@@ -32,7 +33,7 @@ module.exports = (grunt) ->
       sources:
         expand: true
         cwd: 'src'
-        src: ['*.coffee']
+        src: '*.coffee'
         dest: 'dist'
         ext: '.js'
       specs:
@@ -56,7 +57,7 @@ module.exports = (grunt) ->
     uglify:
       options:
         preserveComments: 'some'
-      all:
+      oatmeal:
         files:
           'dist/oatmeal.min.js': ['dist/oatmeal.js']
 
@@ -107,6 +108,6 @@ module.exports = (grunt) ->
   grunt.registerTask 'dev', 'For development, watch for changes and rebuild + test automatically', ['test', 'watch']
 
   # default task
-  grunt.registerTask 'default', 'Build and run the tests', ['test']
+  grunt.registerTask 'default', 'Build and run the tests', ['test', 'clean:grunt']
 
 

@@ -72,7 +72,9 @@
   /*
   Saves a cookie to document.cookie.
   
-  The value will always be encoded and JSON-stringified.
+  This is for use in the browser only. The value will always be encoded and JSON-stringified.
+  
+  The cookies cache will automatically be updated after setting the cookie.
   
   @param {String} name The name of the cookie to save.
   @param {String|Boolean|Number|Object} value The value of the cookie. This can be a full blown object
@@ -124,11 +126,11 @@
   /*
   Constructs a properly formatted cookie string using the given information.
   Use this method instead of #cookie(name, value, options) if you want the raw
-  cookie string instead of setting document.cookie (for example, to use on the nodejs server).
+  cookie string back instead of automatically setting document.cookie.
   
   The value will always be encoded and JSON-stringified.
   
-  @param {String} name The name of the cookie to save
+  @param {String} name The name of the cookie to save.
   @param {String|Boolean|Number|Object} value The value of the cookie. This can be a full blown object
                                               to be JSONified, or a simple scalar value as well.
   @param {Object} [options] Optional configuration options. See the #cookie method for detailed list.
@@ -195,7 +197,7 @@
   /*
   Deletes a cookie.
   
-  @param {String} name Name of the cookie to remove.
+  @param {String} name Name of the cookie to delete.
   */
 
 
