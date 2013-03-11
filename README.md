@@ -131,3 +131,8 @@ Support
 -------
 
 This library depends on `JSON.parse` and `JSON.stringify`. This is natively supported in browsers Internet Explorer 8+, Firefox 3.1+, Safari 4+, Chrome 3+. If you are unfortunate enough to have to care about older browsers, it's up to you to polyfill the behavior.
+
+Release History
+---------------
+
+- **0.1.0** - first version
