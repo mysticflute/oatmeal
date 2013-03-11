@@ -30,8 +30,6 @@ oatmeal.cookie("raisin", "yummy", { months: 3, days: 10, seconds: 10 })
 oatmeal.cookie("raisin", "yummy", { expires: myDate, days: 10 })
 ```
 
-_Disclaimer: `months` and `years` are approximations (30 & 365)._
-
 works with your objects, not against
 
 ```js
@@ -55,8 +53,8 @@ Some of the methods take an optional `options` configuration object
 - **minutes** expiration in minutes. Combinable with other options.
 - **hours** expiration in hours. Combinable with other options.
 - **days** expiration in days. Combinable with other options.
-- **months** expiration in months (approx). Combinable with other options.
-- **years** expiration in years (approx). Combinable with other options.
+- **months** expiration in months (1 = 30 days). Combinable with other options.
+- **years** expiration in years (1 = 365 days). Combinable with other options.
 - **path** path of the cookie, default is `/`.
 - **domain** domain of the cookie.
 - **secure** specify true to add `secure` to the cookie string.
@@ -77,7 +75,7 @@ Gets the value for a cookie called `name`.
 
 #### oatmeal.bake(name, value [, options])
 
-Similar to `oatmeal.cookie(name, value)` except that it avoids setting the actual cookie and returns the properly formatted cookie string instead, e.g., `name=key; secure`. This is mainly useful on the node side.
+Similar to `oatmeal.cookie(name, value)` except that it avoids setting the actual cookie and returns the properly formatted cookie string instead, e.g., `name=key; path=/; secure`. This is mainly useful on the node side.
 
 #### oatmeal.munch(name)
 
@@ -89,7 +87,7 @@ Deletes all cookies.
 
 #### oatmeal.refillJar
 
-Forces a refresh of the known cookies. Normally you won't need to call this externally. An instance where you might need to is if you respecify the source. The previously parsed cookies would be cached and unless you add a new one it won't get updated. You can force that update by calling this method.
+Forces a refresh of the known cookies. Normally you won't need to call this externally. An instance where you might need to is if you respecify the source. The previously parsed cookies would be cached and unless you add a new one it won't get updated. You can force that update instead by calling this method.
 
 #### oatmeal.source(string)
 
