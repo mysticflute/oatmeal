@@ -121,7 +121,7 @@ When used with ender, the method names are changed up a bit because we're on a g
 - `$.deleteCookies` = `oatmeal.munchMunch`
 - `$.refreshCookies` = `oatmeal.refillJar`
 - `$.serializeCookie` = `oatmeal.bake`
-- `$.setCookieSource` = `oatmeal.source`
+- `$.useCookieSource` = `oatmeal.source`
 
 Othewise, everything else should work the same. You can also `require` the oatmeal library.
 
