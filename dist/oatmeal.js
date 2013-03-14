@@ -271,7 +271,8 @@
 
   oatmealNode = {
     bake: bake,
-    source: source
+    source: setSource,
+    cookie: get
   };
 
   if (typeof process !== "undefined" && process !== null ? process.pid : void 0) {

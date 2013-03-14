@@ -82,12 +82,19 @@ module.exports = (grunt) ->
         options:
           specs: 'spec/build/oatmeal-ender.js'
 
+    # ---------------------
+    # grunt `nodeunit` task
+    # ---------------------
+    nodeunit:
+      oatmealNode: 'nodeunit/**/*.coffee'
+
   # load plugins
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-jasmine'
+  grunt.loadNpmTasks 'grunt-contrib-nodeunit'
   grunt.loadNpmTasks 'grunt-notify'
   grunt.loadNpmTasks 'grunt-ender'
 
@@ -97,14 +104,14 @@ module.exports = (grunt) ->
   # ender has to install 'oatmeal' into the node_modules folder, which can't be done in the normal
   # node_modules folder because npm won't allow it. We cd into a different folder to allow ender
   # to install the libs there. then we cd back to the root dir.
-  grunt.registerTask 'ender-pre', -> grunt.file.setBase 'spec/build'
-  grunt.registerTask 'ender-post', -> grunt.file.setBase '../../'
-  grunt.registerTask 'ender', -> grunt.task.run 'ender-pre', '__ender', 'ender-post'
+  grunt.registerTask 'ender-pre', 'Task to run before \'ender\' (Do not call directly)', -> grunt.file.setBase 'spec/build'
+  grunt.registerTask 'ender-post',  'Task to run after \'ender\' (Do not call directly)', -> grunt.file.setBase '../../'
+  grunt.registerTask 'ender', 'Build the ender scripts', -> grunt.task.run 'ender-pre', '__ender', 'ender-post'
 
   # aliases
   grunt.registerTask 'build', 'Compile the scripts', ['clean', 'coffee', 'uglify']
-  grunt.registerTask 'test', 'Build and run the tests', ['build', 'ender', 'jasmine']
-  grunt.registerTask 'qtest', 'A quicker version of test', ['coffee', 'ender', 'jasmine']
+  grunt.registerTask 'test', 'Build and run the tests', ['build', 'ender', 'jasmine', 'nodeunit']
+  grunt.registerTask 'qtest', 'A quicker version of test', ['coffee', 'ender', 'jasmine', 'nodeunit']
   grunt.registerTask 'dev', 'For development, watch for changes and rebuild + test automatically', ['test', 'watch']
 
   # default task

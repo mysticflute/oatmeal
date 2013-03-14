@@ -197,7 +197,9 @@ oatmealNode =
   # get cookie string for serialization
   bake: bake
   # specify the cookie string to parse
-  source: source
+  source: setSource
+  # get cookie value
+  cookie: get
 
 # export to the world
 if process?.pid

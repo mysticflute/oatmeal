@@ -105,6 +105,10 @@ Generates a properly formatted cookie string for the given parameters. It's up t
 
 Specifies the string to parse for cookies. You can grab this from the request headers.
 
+#### oatmeal.cookie(name)
+
+Gets the value for a cookie called `name`.
+
 Ender
 -----
 
@@ -135,4 +139,5 @@ This library depends on `JSON.parse` and `JSON.stringify`. This is natively supp
 Release History
 ---------------
 
+- **0.1.1** - fixed nodejs API
 - **0.1.0** - first version
