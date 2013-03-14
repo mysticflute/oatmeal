@@ -8,7 +8,7 @@ Why another cookie manager?
 
 light as a feather
 
-**1.66kb minified, 450 bytes gzipped**
+**1.59kb minified, 436 bytes gzipped**
 
 flexible expires
 
@@ -85,10 +85,6 @@ Deletes the cookie with the specified name.
 
 Deletes all cookies.
 
-#### oatmeal.refillJar
-
-Forces a refresh of the known cookies. Normally you won't need to call this externally. An instance where you might need to is if you respecify the source. The previously parsed cookies would be cached and unless you add a new one it won't get updated. You can force that update instead by calling this method.
-
 #### oatmeal.source(string)
 
 Specifies a string to parse for cookies. This is mainly useful on the node side.
@@ -121,7 +117,6 @@ When used with ender, the method names are changed up a bit because we're on a g
 - `$.cookie` = `oatmeal.cookie`
 - `$.deleteCookie` = `oatmeal.munch`
 - `$.deleteCookies` = `oatmeal.munchMunch`
-- `$.refreshCookies` = `oatmeal.refillJar`
 - `$.serializeCookie` = `oatmeal.bake`
 - `$.useCookieSource` = `oatmeal.source`
 
@@ -139,5 +134,6 @@ This library depends on `JSON.parse` and `JSON.stringify`. This is natively supp
 Release History
 ---------------
 
+- **0.1.2** - don't expose refillJar method anymore
 - **0.1.1** - fixed nodejs API
 - **0.1.0** - first version

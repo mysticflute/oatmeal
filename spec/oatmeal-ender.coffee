@@ -28,11 +28,3 @@ describe 'oatmeal', ->
     it 'routes $.useCookieSource to oatmeal.source', ->
       $.useCookieSource 'test=1'
       expect($.cookie 'test').toEqual 1
-
-    it 'routes $.refreshCookies to oatmeal.refillJar', ->
-      $.cookie 'test', 1
-      expect($.cookie 'test').toEqual 1
-      $.useCookieSource 'test=2'
-      expect($.cookie 'test').toEqual 1
-      $.refreshCookies()
-      expect($.cookie 'test').toEqual 2

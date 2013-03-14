@@ -101,11 +101,12 @@ describe 'oatmeal', ->
 
   describe 'when replacing a cookie', ->
 
-    oatmeal.cookie 'test', 1
-    expect(oatmeal.cookie 'test').toEqual 1
+    it 'replaces the value', ->
+      oatmeal.cookie 'test', 1
+      expect(oatmeal.cookie 'test').toEqual 1
 
-    oatmeal.cookie 'test', 2
-    expect(oatmeal.cookie 'test').toEqual 2
+      oatmeal.cookie 'test', 2
+      expect(oatmeal.cookie 'test').toEqual 2
 
   describe 'when sourcing the cookie ingredients', ->
 
@@ -142,5 +143,11 @@ describe 'oatmeal', ->
 
       # should find the new one
       expect(oatmeal.cookie 'test2').toEqual 2
+
+    it 'is automatic after doing a set source', ->
+      oatmeal.cookie 'test', 1
+      expect(oatmeal.cookie 'test').toEqual 1
+      oatmeal.source 'another=2'
+      expect(oatmeal.cookie 'another').toEqual 2
 
 

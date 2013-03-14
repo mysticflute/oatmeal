@@ -1,9 +1,8 @@
 oatmeal = require '../dist/oatmeal'
 
 exports.setUp = (callback) ->
-  oatmeal.source ''
+  oatmeal.source null
   callback()
-
 
 exports.testSourceAndCookie = (test) ->
   test.expect 2
@@ -16,4 +15,8 @@ exports.testBake = (test) ->
   test.expect 1
   string = oatmeal.bake 'test', 2
   test.equal string, 'test=2; path=/'
+  test.done()
+
+exports.testCookieWithoutSource = (test) ->
+  oatmeal.cookie 'honalulu' # no errors
   test.done()

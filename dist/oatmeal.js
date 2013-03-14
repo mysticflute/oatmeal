@@ -8,7 +8,7 @@
 
 (function() {
   'use strict';
-  var bake, cookie, cookieJar, decode, encode, fillJar, get, getSource, munch, munchMunch, oatmeal, oatmealNode, refillJar, serialize, set, setSource, source,
+  var bake, cookie, cookieJar, decode, encode, get, getSource, munch, munchMunch, oatmeal, oatmealNode, refillJar, serialize, set, setSource, source,
     __hasProp = {}.hasOwnProperty;
 
   cookieJar = null;
@@ -22,7 +22,7 @@
 
 
   getSource = function() {
-    return source || document.cookie || null;
+    return source || (typeof document !== "undefined" && document !== null ? document.cookie : void 0) || '';
   };
 
   /*
@@ -32,7 +32,8 @@
 
 
   setSource = function(src) {
-    return source = src;
+    source = src;
+    return refillJar();
   };
 
   /*
@@ -66,7 +67,7 @@
 
 
   get = function(name) {
-    return (cookieJar != null ? cookieJar : cookieJar = fillJar(getSource()))[name];
+    return (cookieJar != null ? cookieJar : cookieJar = refillJar())[name];
   };
 
   /*
@@ -89,38 +90,25 @@
   };
 
   /*
-  Takes a raw cookie string and returns a map of key-value pairs.
-  
-  @param {String} string The string to parse, e.g., from getSource().
-  @returns an object with key/value pairs from the parsed input.
-  */
-
-
-  fillJar = function(string) {
-    var cookie, pair, pairs, _i, _len, _ref;
-    pairs = {};
-    if (!string) {
-      return pairs;
-    }
-    _ref = string.split(/;\s+/g);
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      cookie = _ref[_i];
-      pair = cookie.split('=');
-      pairs[pair[0]] = decode(pair[1]);
-    }
-    return pairs;
-  };
-
-  /*
-  Refreshes the cookies cache. Normally you won't need to call this externally.
-  However, you might need to if you say, respecify the source.
+  Reads and parses the cookies from getSource() and caches the results to an object map.
+  Under normal operations you will not need to call this explicitly. However you may need
+  to if you respecify the source.
   */
 
 
   refillJar = function() {
-    if (getSource() !== null) {
-      return cookieJar = fillJar(getSource());
+    var cookie, pair, _i, _len, _ref;
+    cookieJar = {};
+    if (!getSource()) {
+      return;
     }
+    _ref = getSource().split(/;\s*/g);
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      cookie = _ref[_i];
+      pair = cookie.split('=');
+      cookieJar[pair[0]] = decode(pair[1]);
+    }
+    return cookieJar;
   };
 
   /*
@@ -146,29 +134,29 @@
     }
     date = options.expires || new Date();
     length = 0;
-    if (options.seconds != null) {
+    if (options.seconds) {
       length += 1000 * options.seconds;
     }
-    if (options.minutes != null) {
+    if (options.minutes) {
       length += 1000 * 60 * options.minutes;
     }
-    if (options.hours != null) {
+    if (options.hours) {
       length += 1000 * 60 * 60 * options.hours;
     }
-    if (options.days != null) {
+    if (options.days) {
       length += 1000 * 60 * 60 * 24 * options.days;
     }
-    if (options.months != null) {
+    if (options.months) {
       length += 1000 * 60 * 60 * 24 * 30 * options.months;
     }
-    if (options.years != null) {
+    if (options.years) {
       length += 1000 * 60 * 60 * 24 * 365 * options.years;
     }
     date.setTime(date.getTime() + length);
     path = serialize('path', options.path || '/');
     domain = serialize('domain', options.domain);
     secure = serialize('secure', options.secure);
-    expires = serialize('expires', (options.expires != null) || length !== 0 ? date.toUTCString() : null);
+    expires = serialize('expires', options.expires || length !== 0 ? date.toUTCString() : null);
     return "" + name + "=" + (encode(value)) + expires + path + domain + secure;
   };
 
@@ -202,7 +190,7 @@
 
 
   munch = function(name) {
-    return set(name, '(del)', {
+    return set(name, '', {
       days: -1
     });
   };
@@ -219,7 +207,6 @@
       if (!__hasProp.call(cookieJar, cookie)) continue;
       munch(cookie);
     }
-    return cookieJar = null;
   };
 
   /*
@@ -264,15 +251,14 @@
     bake: bake,
     munch: munch,
     cookie: cookie,
-    refillJar: refillJar,
     source: setSource,
     munchMunch: munchMunch
   };
 
   oatmealNode = {
     bake: bake,
-    source: setSource,
-    cookie: get
+    cookie: get,
+    source: setSource
   };
 
   if (typeof process !== "undefined" && process !== null ? process.pid : void 0) {

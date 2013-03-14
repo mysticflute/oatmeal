@@ -13,13 +13,15 @@ source = null
 Gets the specified source containing the cookie string, or document.cookie if not set.
 @returns a string containing the cookies to parse or null if not available.
 ###
-getSource = -> source or document.cookie or null
+getSource = -> source or document?.cookie or ''
 
 ###
 Specifies the specific string to parse for cookies.
 @param {String} src The properly formatted string containing the cookies.
 ###
-setSource = (src) -> source = src
+setSource = (src) ->
+  source = src
+  refillJar()
 
 ###
 Encodes a cookie value and converts it to a JSON string.
@@ -41,7 +43,7 @@ Gets a cookie value by name.
 
 @param {String} name The name of the cookie to retrieve.
 ###
-get = (name) -> (cookieJar ?= fillJar getSource())[name]
+get = (name) -> (cookieJar ?= refillJar())[name]
 
 ###
 Saves a cookie to document.cookie.
@@ -55,30 +57,25 @@ The cookies cache will automatically be updated after setting the cookie.
                                             to be JSONified, or a simple scalar value as well.
 @param {Object} [options] Optional configuration options. See the #cookie method for detailed list.
 ###
-set = (name, value, options) -> document.cookie = bake(name, value, options); refillJar()
+set = (name, value, options) ->
+  document.cookie = bake(name, value, options)
+  refillJar()
 
 ###
-Takes a raw cookie string and returns a map of key-value pairs.
-
-@param {String} string The string to parse, e.g., from getSource().
-@returns an object with key/value pairs from the parsed input.
+Reads and parses the cookies from getSource() and caches the results to an object map.
+Under normal operations you will not need to call this explicitly. However you may need
+to if you respecify the source.
 ###
-fillJar = (string) ->
-  pairs = {}
+refillJar = ->
+  cookieJar = {}
 
-  if not string then return pairs
+  if not getSource() then return
 
-  for cookie in string.split /;\s+/g
+  for cookie in getSource().split /;\s*/g
     pair = cookie.split '='
-    pairs[pair[0]] = decode pair[1]
+    cookieJar[pair[0]] = decode pair[1]
 
-  pairs
-
-###
-Refreshes the cookies cache. Normally you won't need to call this externally.
-However, you might need to if you say, respecify the source.
-###
-refillJar = -> cookieJar = fillJar(getSource()) unless getSource() is null
+  cookieJar
 
 ###
 Constructs a properly formatted cookie string using the given information.
@@ -104,18 +101,18 @@ bake = (name, value, options = {}) ->
   date = options.expires or new Date()
 
   length = 0
-  length += 1000 * options.seconds if options.seconds?
-  length += 1000 * 60 * options.minutes if options.minutes?
-  length += 1000 * 60 * 60 * options.hours if options.hours?
-  length += 1000 * 60 * 60 * 24 * options.days if options.days?
-  length += 1000 * 60 * 60 * 24 * 30 * options.months if options.months?
-  length += 1000 * 60 * 60 * 24 * 365 * options.years if options.years?
-  date.setTime(date.getTime() + length)
+  length += 1000 * options.seconds if options.seconds
+  length += 1000 * 60 * options.minutes if options.minutes
+  length += 1000 * 60 * 60 * options.hours if options.hours
+  length += 1000 * 60 * 60 * 24 * options.days if options.days
+  length += 1000 * 60 * 60 * 24 * 30 * options.months if options.months
+  length += 1000 * 60 * 60 * 24 * 365 * options.years if options.years
+  date.setTime date.getTime() + length
 
   path = serialize 'path', options.path or '/'
   domain = serialize 'domain', options.domain
   secure = serialize 'secure', options.secure
-  expires = serialize 'expires', if options.expires? or length isnt 0 then date.toUTCString() else null
+  expires = serialize 'expires', if options.expires or length isnt 0 then date.toUTCString() else null
 
   "#{name}=#{encode value}#{expires}#{path}#{domain}#{secure}"
 
@@ -137,7 +134,7 @@ Deletes a cookie.
 
 @param {String} name Name of the cookie to delete.
 ###
-munch = (name) -> set(name, '(del)', { days: -1 })
+munch = (name) -> set(name, '', { days: -1 })
 
 ###
 Deletes all cookies
@@ -145,7 +142,7 @@ Deletes all cookies
 munchMunch = ->
   refillJar()
   munch cookie for own cookie of cookieJar
-  cookieJar = null
+  return
 
 ###
 Main entry point for reading and writing cookies.
@@ -185,8 +182,6 @@ oatmeal =
   munch: munch
   # get or set cookie
   cookie: cookie
-  # reread cookies from source
-  refillJar: refillJar
   # specify the cookie source (default document.cookie)
   source: setSource
   # delete all cookies
@@ -196,10 +191,10 @@ oatmeal =
 oatmealNode =
   # get cookie string for serialization
   bake: bake
-  # specify the cookie string to parse
-  source: setSource
   # get cookie value
   cookie: get
+  # specify the cookie string to parse
+  source: setSource
 
 # export to the world
 if process?.pid
