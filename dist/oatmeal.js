@@ -100,7 +100,7 @@
     var cookie, pair, _i, _len, _ref;
     cookieJar = {};
     if (!getSource()) {
-      return;
+      return cookieJar;
     }
     _ref = getSource().split(/;\s*/g);
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {

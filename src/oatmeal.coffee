@@ -69,7 +69,7 @@ to if you respecify the source.
 refillJar = ->
   cookieJar = {}
 
-  if not getSource() then return
+  if not getSource() then return cookieJar
 
   for cookie in getSource().split /;\s*/g
     pair = cookie.split '='

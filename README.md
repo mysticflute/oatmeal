@@ -134,6 +134,7 @@ This library depends on `JSON.parse` and `JSON.stringify`. This is natively supp
 Release History
 ---------------
 
+- **0.1.3** - fix bug when document.cookie is empty
 - **0.1.2** - don't expose refillJar method anymore
 - **0.1.1** - fixed nodejs API
 - **0.1.0** - first version
